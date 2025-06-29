@@ -15,12 +15,6 @@ Proyek ini bertujuan untuk membangun sistem rekomendasi buku menggunakan dataset
 
 [2] Aggarwal, C. C. (2016). Recommender Systems: The Textbook. Springer.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
-- Format Referensi dapat mengacu pada penulisan sitasi [IEEE](https://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf), [APA](https://www.mendeley.com/guides/apa-citation-guide/) atau secara umum seperti [di sini](https://penerbitdeepublish.com/menulis-buku-membuat-sitasi-dengan-mudah/)
-- Sumber yang bisa digunakan [Scholar](https://scholar.google.com/)
-
 ## Business Understanding
 
 Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
@@ -28,29 +22,78 @@ Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
 Bagian laporan ini mencakup:
 
 ### Problem Statements
-
-Menjelaskan pernyataan masalah:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+Proyek sistem rekomendasi buku ini berupaya menjawab beberapa masalah utama yang dihadapi oleh pembaca dan platform buku:
+- Pernyataan Masalah 1: Kesulitan Pengguna Menemukan Buku yang Relevan. Dengan jutaan judul buku yang tersedia, pengguna seringkali kewalahan dan kesulitan dalam menyaring dan menemukan buku-buku yang benar-benar sesuai dengan minat dan preferensi mereka. Ini dapat menyebabkan kelelahan keputusan (decision fatigue) atau kehilangan minat dalam mencari buku baru.
+- Pernyataan Masalah 2: Efisiensi Penemuan Buku Baru yang Rendah. Pembaca mungkin terjebak dalam membaca genre atau penulis yang sama secara berulang dan melewatkan potensi penemuan buku-buku menarik di luar lingkaran kebiasaan mereka. Proses penemuan buku baru secara manual seringkali memakan waktu dan tidak efisien.
+- Pernyataan Masalah 3: Kurangnya Personalisasi Pengalaman Membaca. Platform buku dan toko buku online umumnya menawarkan daftar buku terlaris atau populer, tetapi kurang dalam memberikan rekomendasi yang spesifik untuk setiap individu berdasarkan riwayat dan preferensi unik mereka.
 
 ### Goals
-
-Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
-
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+Berdasarkan pernyataan masalah di atas, tujuan utama dari proyek sistem rekomendasi buku ini adalah:
+- Jawaban pernyataan masalah 1 : Mengembangkan model yang mampu merekomendasikan buku yang sangat relevan kepada pengguna, sehingga meningkatkan kepuasan dan keterlibatan pembaca.
+- Jawaban pernyataan masalah 2 : Menyediakan mekanisme otomatis untuk penemuan buku baru yang efisien, membantu pengguna menjelajahi berbagai judul di luar preferensi mereka yang sudah ada.
+- Jawaban pernyataan masalah 3 : Menciptakan pengalaman membaca yang lebih personal dan menarik bagi setiap pengguna, dengan menyarankan buku berdasarkan riwayat interaksi dan preferensi yang teridentifikasi.
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
 
     ### Solution statements
-    - Mengajukan 2 atau lebih solution approach (algoritma atau pendekatan sistem rekomendasi).
+    - Solution Approach 1: Content-Based Filtering.
+        - Deskripsi: Pendekatan ini akan merekomendasikan buku berdasarkan kemiripan fitur-fitur intrinsik buku itu sendiri. Misalnya, jika seorang pengguna menyukai buku bergenre fiksi ilmiah dengan penulis tertentu, sistem akan merekomendasikan buku fiksi ilmiah lain dari penulis yang sama atau penulis lain dengan gaya serupa. Fitur-fitur yang akan dipertimbangkan meliputi judul, penulis, penerbit, dan tahun publikasi.
+        - Implementasi Algoritma: Kami akan menggunakan TF-IDF Vectorizer untuk mengubah deskripsi tekstual buku (gabungan judul, penulis, penerbit) menjadi representasi numerik, dan kemudian menghitung Cosine Similarity antar buku untuk menemukan buku yang paling mirip secara konten.
+    - Solution Approach 2: Collaborative Filtering (Item-based).
+        - Deskripsi: Pendekatan ini akan merekomendasikan buku berdasarkan pola rating atau interaksi pengguna lain. Jika pengguna A menyukai buku X dan Y, dan pengguna B juga menyukai buku X, maka sistem akan menyarankan buku Y kepada pengguna B karena pola preferensi mereka serupa. Kami memilih pendekatan item-based karena seringkali lebih stabil dan mudah diskalakan untuk dataset besar dibandingkan user-based.
+        - Implementasi Algoritma: Kami akan membangun matriks pengguna-item (user-item matrix) yang jarang, dan kemudian menggunakan algoritma K-Nearest Neighbors (KNN) dengan metrik Cosine Similarity untuk menemukan buku-buku yang paling mirip berdasarkan pola rating yang mereka terima dari pengguna.
+     
+    Dengan membandingkan kedua pendekatan ini, kami dapat menentukan solusi mana yang paling efektif untuk dataset Book-Crossing dan kebutuhan proyek ini.
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
+Data yang digunakan dalam proyek sistem rekomendasi buku ini adalah Book-Crossing Dataset, yang dapat diunduh dari Kaggle melalui tautan berikut: Book-Recommendation-Dataset by Arashnic. Dataset ini merupakan kumpulan data dari komunitas pembaca buku online BookCrossing.com dan terdiri dari tiga file CSV terpisah: Books.csv, Ratings.csv, dan Users.csv.
+
+Secara total, dataset ini berisi:
+
+271.379 entri buku unik dalam Books.csv.
+
+278.858 entri pengguna unik dalam Users.csv.
+
+1.149.780 entri rating dalam Ratings.csv.
+
+Kondisi data awal menunjukkan adanya beberapa nilai yang hilang, tipe data yang tidak konsisten (misalnya, 'Year-Of-Publication' yang bisa berupa string), dan rating implisit (nilai 0) yang perlu ditangani. Data rating juga sangat sparse, artinya sebagian besar pengguna hanya memberi rating pada sebagian kecil dari total buku yang tersedia.
+
+Berikut adalah uraian variabel-variabel pada setiap DataFrame:
+
+1. Books.csv
+
+ISBN: (Object) International Standard Book Number, pengidentifikasi unik untuk setiap buku. Ini adalah kunci penghubung dengan DataFrame Ratings.
+
+Book-Title: (Object) Judul buku.
+
+Book-Author: (Object) Nama penulis buku.
+
+Year-Of-Publication: (Object/Integer) Tahun publikasi buku. Awalnya dapat berisi nilai non-numerik.
+
+Publisher: (Object) Nama penerbit buku.
+
+Image-URL-S: (Object) URL gambar sampul buku ukuran kecil.
+
+Image-URL-M: (Object) URL gambar sampul buku ukuran sedang.
+
+Image-URL-L: (Object) URL gambar sampul buku ukuran besar.
+
+2. Users.csv
+
+User-ID: (Integer) Pengidentifikasi unik untuk setiap pengguna. Ini adalah kunci penghubung dengan DataFrame Ratings.
+
+Location: (Object) Lokasi geografis pengguna (negara, kota, dll.).
+
+Age: (Object/Float) Usia pengguna. Awalnya dapat berisi nilai non-numerik atau NaN.
+
+3. Ratings.csv
+
+User-ID: (Integer) Pengidentifikasi pengguna yang memberikan rating.
+
+ISBN: (Object) ISBN buku yang diberi rating.
+
+Book-Rating: (Integer) Rating yang diberikan pengguna pada buku, berkisar dari 0 hingga 10. Rating 0 sering diartikan sebagai rating implisit (buku yang hanya dilihat/diakses).
 
 Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
 
