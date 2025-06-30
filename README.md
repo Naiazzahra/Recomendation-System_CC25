@@ -74,16 +74,15 @@ Berikut adalah uraian variabel-variabel pada setiap DataFrame:
     1. Distribusi Rating Buku
 [!Distribusi Rating Buku](dis_rating_buku.png)
 
-        Berdasarkan  Distribusi rating menunjukkan bahwa buku eksplisit umumnya diterima dengan sangat baik oleh pembaca. Rating yang dominan tinggi menunjukkan kepuasan yang tinggi, serta mungkin adanya komunitas pembaca yang loyal. Namun, penting juga mencermati kemungkinan bias dalam pemberian rating, seperti hanya pembaca yang menyukai genre tersebut yang meninggalkan ulasan.
+Berdasarkan  Distribusi rating menunjukkan bahwa buku eksplisit umumnya diterima dengan sangat baik oleh pembaca. Rating yang dominan tinggi menunjukkan kepuasan yang tinggi, serta mungkin adanya komunitas pembaca yang loyal. Namun, penting juga mencermati kemungkinan bias dalam pemberian rating, seperti hanya pembaca yang menyukai genre tersebut yang meninggalkan ulasan.
     2. Top 10 Penerbit paling produktif
 [!penerbit paling Produktif](top10_penerbit.png)
 
-        Berdasarkan Visualisasi ini menunjukkan bahwa Harlequin adalah penerbit paling produktif, secara signifikan mengungguli yang lain. Sementara itu, sembilan penerbit lainnya memiliki volume yang relatif serupa, menandakan kompetisi yang lebih merata di luar dominasi Harlequin.
-
+Berdasarkan Visualisasi ini menunjukkan bahwa Harlequin adalah penerbit paling produktif, secara signifikan mengungguli yang lain. Sementara itu, sembilan penerbit lainnya memiliki volume yang relatif serupa, menandakan kompetisi yang lebih merata di luar dominasi Harlequin.
     3. Top 10 Penulis paling produktif
 [!Penulis padlin Produktif](top10_penulis.png)
 
-        Berdasarkan visualisasi diatas Agatha Christie memimpin sebagai penulis paling produktif, dengan Shakespeare dan King menyusul. Grafik ini menunjukkan bahwa produktivitas luar biasa bisa dicapai oleh penulis dari berbagai era dan genre, dan penulis serial cenderung memiliki volume karya lebih banyak. Informasi ini sangat bermanfaat untuk analisis pasar buku, tren genre, atau inspirasi bagi penulis baru.
+Berdasarkan visualisasi diatas Agatha Christie memimpin sebagai penulis paling produktif, dengan Shakespeare dan King menyusul. Grafik ini menunjukkan bahwa produktivitas luar biasa bisa dicapai oleh penulis dari berbagai era dan genre, dan penulis serial cenderung memiliki volume karya lebih banyak. Informasi ini sangat bermanfaat untuk analisis pasar buku, tren genre, atau inspirasi bagi penulis baru.
 
 ## Data Preparation
 Adapun teknik yang dilakukan : 
@@ -91,38 +90,35 @@ Adapun teknik yang dilakukan :
         - Konversi Year-Of-Publication ke numerik
 Menggunakan pd.to_numeric(..., errors='coerce') untuk memastikan kolom ini bertipe numerik dan mengubah nilai tidak valid (seperti 'DK Publishing Inc' atau 'Gallimard') menjadi NaN.
 
-        Alasan : Kolom tahun yang tidak valid dapat menyebabkan kesalahan saat melakukan filter atau visualisasi berdasarkan waktu.
+Alasan : Kolom tahun yang tidak valid dapat menyebabkan kesalahan saat melakukan filter atau visualisasi berdasarkan waktu.
         - Isi nilai tidak valid (NaN) pada Year-Of-Publication dengan median tahun valid
 Setelah disaring agar hanya tahun antara 1900–2025, median dihitung dan digunakan untuk mengisi nilai kosong agar distribusi tidak terdistorsi oleh nilai ekstrem.
 
-        Alasan : Nilai kosong di kolom seperti author atau publisher bisa menyebabkan error saat eksplorasi atau analisis.
+Alasan : Nilai kosong di kolom seperti author atau publisher bisa menyebabkan error saat eksplorasi atau analisis.
         - Isi nilai kosong pada Book-Author, Publisher, dan Image-URL-L
 Diisi dengan placeholder seperti 'Unknown Author' atau 'Unknown Publisher'
 
-        Alasan :  untuk menjaga integritas data saat digabungkan atau divisualisasikan.
+Alasan :  untuk menjaga integritas data saat digabungkan atau divisualisasikan.
         - Sampling 40.000 judul buku
 Dataset buku sangat besar (271 ribu entri), sehingga sampling dilakukan untuk menghemat waktu komputasi dan memori, terutama ketika membangun TF-IDF matrix yang kompleks (40000 x 40000).
-
     2. Dataset Ratings
         - Filter hanya rating eksplisit (Book-Rating ≠ 0)
 Dalam dataset ini, Book-Rating = 0 biasanya merepresentasikan interaksi implisit (seperti view atau klik), bukan penilaian yang sebenarnya.
 
-        Alasan : Hanya rating eksplisit yang valid sebagai indikator relevansi atau kesukaan pengguna terhadap buku.
+Alasan : Hanya rating eksplisit yang valid sebagai indikator relevansi atau kesukaan pengguna terhadap buku.
         - Menghapus duplikat rating dari user ke buku yang sama
 Disimpan hanya satu rating unik per kombinasi User-ID dan ISBN untuk menghindari bias atau duplikasi saat penggabungan data.
 
-        Alasan : Duplikasi dapat mengganggu distribusi rating dan menyebabkan bobot berlebih pada buku tertentu.
+Alasan : Duplikasi dapat mengganggu distribusi rating dan menyebabkan bobot berlebih pada buku tertentu.
         - Gabungkan Ratings.csv dengan Books.csv
 Menggunakan kolom ISBN untuk menghubungkan data rating dengan judul buku yang dibutuhkan sebagai input Content-Based Filtering.
 
-        Alasan : Penggabungan dengan judul sangat penting karena model rekomendasi ini berbasis pada judul (Book-Title).
-
+Alasan : Penggabungan dengan judul sangat penting karena model rekomendasi ini berbasis pada judul (Book-Title).
     3. Dataset Users
         - Konversi kolom Age ke numerik
 Kolom ini mengandung beberapa nilai tidak valid (misalnya, umur > 100 atau < 5), sehingga perlu dibersihkan dan diubah ke tipe numerik.
 
-        Alasan : Meskipun Age tidak digunakan langsung dalam sistem Content-Based ini, konversi dilakukan sebagai bagian dari best practice untuk menjaga integritas data.
-
+Alasan : Meskipun Age tidak digunakan langsung dalam sistem Content-Based ini, konversi dilakukan sebagai bagian dari best practice untuk menjaga integritas data.
     4. Ekstrasi fitur dengan TF-IDF
         Setelah data buku yang bersih diperoleh, dilakukan proses ekstraksi fitur teks menggunakan teknik TF-IDF (Term Frequency–Inverse Document Frequency). Tujuan dari langkah ini adalah mengubah teks judul buku menjadi representasi numerik (vektor), yang dapat digunakan untuk mengukur kemiripan antar buku.
         - Proses:
@@ -132,15 +128,13 @@ Kolom ini mengandung beberapa nilai tidak valid (misalnya, umur > 100 atau < 5),
 
 ## Modeling
 Sistem rekomendasi yang dibangun dalam proyek ini menggunakan pendekatan Content-Based Filtering berbasis cosine similarity antar judul buku. Fokus utama dari metode ini adalah menemukan buku-buku yang memiliki kemiripan tinggi secara semantik terhadap judul yang diberikan sebagai input oleh pengguna. Setelah representasi judul diubah menjadi vektor melalui proses TF-IDF (dijelaskan pada bagian Data Preparation), proses utama pada tahap modeling adalah mengukur kedekatan antar vektor judul buku dengan cosine similarity.
-
     1. Cosine Similarity
 
-        Tahap berikutnya adalah mengukur kemiripan antar buku berdasarkan vektor TF-IDF-nya. Untuk itu, digunakan metrik cosine similarity, yaitu ukuran kemiripan dua vektor yang dihitung dari nilai kosinus sudut antara keduanya. Nilai cosine similarity berkisar antara 0 (tidak mirip sama sekali) hingga 1 (sama persis), dan semakin tinggi nilai ini, maka semakin mirip konten antar judul buku tersebut secara tekstual. Dengan menghitung cosine similarity antara satu judul dengan seluruh judul lainnya dalam dataset, diperoleh skor kemiripan untuk masing-masing pasangan judul buku.
-
+Tahap berikutnya adalah mengukur kemiripan antar buku berdasarkan vektor TF-IDF-nya. Untuk itu, digunakan metrik cosine similarity, yaitu ukuran kemiripan dua vektor yang dihitung dari nilai kosinus sudut antara keduanya. Nilai cosine similarity berkisar antara 0 (tidak mirip sama sekali) hingga 1 (sama persis), dan semakin tinggi nilai ini, maka semakin mirip konten antar judul buku tersebut secara tekstual. Dengan menghitung cosine similarity antara satu judul dengan seluruh judul lainnya dalam dataset, diperoleh skor kemiripan untuk masing-masing pasangan judul buku.
     2. Fungsi Rekomendasi
 (![Top N Recommendations](output_top_n.png))
 
-        Membangun fungsi rekomendasi yang menerima input berupa satu judul buku dari pengguna, lalu mengembalikan daftar Top-N buku yang memiliki skor cosine similarity tertinggi dengan buku input tersebut. Dalam implementasinya, setelah vektor similarity dihitung, sistem mengurutkan daftar buku berdasarkan skor tertinggi dan mengecualikan buku input itu sendiri dari daftar hasil. Output dari fungsi ini adalah sejumlah buku dengan judul yang kemudian dapat ditampilkan sebagai hasil rekomendasi kepada pengguna.
+Membangun fungsi rekomendasi yang menerima input berupa satu judul buku dari pengguna, lalu mengembalikan daftar Top-N buku yang memiliki skor cosine similarity tertinggi dengan buku input tersebut. Dalam implementasinya, setelah vektor similarity dihitung, sistem mengurutkan daftar buku berdasarkan skor tertinggi dan mengecualikan buku input itu sendiri dari daftar hasil. Output dari fungsi ini adalah sejumlah buku dengan judul yang kemudian dapat ditampilkan sebagai hasil rekomendasi kepada pengguna.
 
 ## Evaluation
 - Kesulitan pengguna menemukan Buku yang Relevan
