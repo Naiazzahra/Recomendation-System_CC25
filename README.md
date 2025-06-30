@@ -104,8 +104,8 @@ Diisi dengan placeholder seperti 'Unknown Author' atau 'Unknown Publisher'
 
         Alasan :  untuk menjaga integritas data saat digabungkan atau divisualisasikan.
 
-    2. Pembersihan Data Rating (Ratings.csv)
-        - Filter hanya rating eksplisit (Book-Rating ≠ 0)
+2. Pembersihan Data Rating (Ratings.csv)
+   - Filter hanya rating eksplisit (Book-Rating ≠ 0)
 Dalam dataset ini, Book-Rating = 0 biasanya merepresentasikan interaksi implisit (seperti view atau klik), bukan penilaian yang sebenarnya.
 
         Alasan : Hanya rating eksplisit yang valid sebagai indikator relevansi atau kesukaan pengguna terhadap buku.
@@ -113,26 +113,26 @@ Dalam dataset ini, Book-Rating = 0 biasanya merepresentasikan interaksi implisit
 
         Alasan : Duplikasi dapat mengganggu distribusi rating dan menyebabkan bobot berlebih pada buku tertentu.
 
-    3. Filter Sparsity pada Data Rating
-        - Agar sistem bekerja pada data yang lebih padat dan informatif, dilakukan penyaringan sebagai berikut:
+3. Filter Sparsity pada Data Rating
+   - Agar sistem bekerja pada data yang lebih padat dan informatif, dilakukan penyaringan sebagai berikut:
           - Hanya pengguna yang memberikan ≥ 5 rating disertakan.
           - Hanya buku yang menerima ≥ 5 rating dari pengguna yang dipertahankan.
 
         Alasan : Filter sparsity ini bertujuan mengurangi noise dan mempercepat pemrosesan, dengan memastikan bahwa data yang digunakan mengandung informasi yang cukup dan tidak terlalu jarang (sparse).
    
-    4. Dataset Users
-        - Konversi kolom Age ke numerik
+4. Dataset Users
+   - Konversi kolom Age ke numerik
 Kolom ini mengandung beberapa nilai tidak valid, sehingga perlu dibersihkan dan diubah ke tipe numerik.
 
         Alasan : Meskipun Age tidak digunakan langsung dalam sistem Content-Based ini, konversi dilakukan sebagai bagian dari best practice untuk menjaga integritas data.
 
-    5. Sampling data Book
-        - Setelah seluruh data buku digabung dan dibersihkan, dilakukan sampling sebanyak 40.000 judul buku secara acak dari data gabungan. Sampling dilakukan setelah penggabungan dengan ratings_explicit, bukan pada awal tahapan.
+5. Sampling data Book
+   - Setelah seluruh data buku digabung dan dibersihkan, dilakukan sampling sebanyak 40.000 judul buku secara acak dari data gabungan. Sampling dilakukan setelah penggabungan dengan ratings_explicit, bukan pada awal tahapan.
 
         Alasan : Karena TF-IDF membangun matriks berdimensi tinggi (berdasarkan jumlah kata unik), sampling dilakukan untuk menghemat memori dan mempercepat proses komputasi cosine similarity.
 
 
-    6. Ekstrasi fitur dengan TF-IDF
+6. Ekstrasi fitur dengan TF-IDF
         Setelah data buku yang bersih diperoleh, dilakukan proses ekstraksi fitur teks menggunakan teknik TF-IDF (Term Frequency–Inverse Document Frequency). Tujuan dari langkah ini adalah mengubah teks judul buku menjadi representasi numerik (vektor), yang dapat digunakan untuk mengukur kemiripan antar buku.
         - Proses:
           - Menggunakan TfidfVectorizer dari scikit-learn, setiap judul buku dikonversi menjadi vektor TF-IDF. Stop words dalam bahasa Inggris dihapus untuk menghindari pengaruh kata-kata umum yang tidak bermakna, seperti “the”, “and”, “of”, dan sebagainya.
