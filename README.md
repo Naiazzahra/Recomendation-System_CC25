@@ -134,9 +134,11 @@ Kolom ini mengandung beberapa nilai tidak valid, sehingga perlu dibersihkan dan 
 
 6. Ekstrasi fitur dengan TF-IDF
         Setelah data buku yang bersih diperoleh, dilakukan proses ekstraksi fitur teks menggunakan teknik TF-IDF (Term Frequency–Inverse Document Frequency). Tujuan dari langkah ini adalah mengubah teks judul buku menjadi representasi numerik (vektor), yang dapat digunakan untuk mengukur kemiripan antar buku.
-        - Proses:
+   
+   - Proses:
           - Menggunakan TfidfVectorizer dari scikit-learn, setiap judul buku dikonversi menjadi vektor TF-IDF. Stop words dalam bahasa Inggris dihapus untuk menghindari pengaruh kata-kata umum yang tidak bermakna, seperti “the”, “and”, “of”, dan sebagainya.
-        - Hasil:
+     
+    - Hasil:
           - Dihasilkan matriks berdimensi 40000 x n, di mana n adalah jumlah kata unik dalam seluruh korpus judul. Setiap baris mewakili sebuah buku, dan setiap kolom mewakili bobot sebuah kata berdasarkan frekuensinya relatif terhadap seluruh korpus.
 
 ## Modeling
