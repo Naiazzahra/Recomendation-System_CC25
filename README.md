@@ -72,15 +72,15 @@ Berikut adalah uraian variabel-variabel pada setiap DataFrame:
 
 **Exploratory Data Analysis**:
     1. Distribusi Rating Buku
-(![Distribusi Rating Buku](dis_rating_buku.png))
+![Distribusi Rating Buku](dis_rating_buku.png)
 
 Berdasarkan  Distribusi rating menunjukkan bahwa buku eksplisit umumnya diterima dengan sangat baik oleh pembaca. Rating yang dominan tinggi menunjukkan kepuasan yang tinggi, serta mungkin adanya komunitas pembaca yang loyal. Namun, penting juga mencermati kemungkinan bias dalam pemberian rating, seperti hanya pembaca yang menyukai genre tersebut yang meninggalkan ulasan.
     2. Top 10 Penerbit paling produktif
-(![penerbit paling Produktif](top10_penerbit.png))
+![penerbit paling Produktif](top10_penerbit.png)
 
 Berdasarkan Visualisasi ini menunjukkan bahwa Harlequin adalah penerbit paling produktif, secara signifikan mengungguli yang lain. Sementara itu, sembilan penerbit lainnya memiliki volume yang relatif serupa, menandakan kompetisi yang lebih merata di luar dominasi Harlequin.
     3. Top 10 Penulis paling produktif
-(![Penulis padlin Produktif](top10_penulis.png))
+![Penulis padlin Produktif](top10_penulis.png)
 
 Berdasarkan visualisasi diatas Agatha Christie memimpin sebagai penulis paling produktif, dengan Shakespeare dan King menyusul. Grafik ini menunjukkan bahwa produktivitas luar biasa bisa dicapai oleh penulis dari berbagai era dan genre, dan penulis serial cenderung memiliki volume karya lebih banyak. Informasi ini sangat bermanfaat untuk analisis pasar buku, tren genre, atau inspirasi bagi penulis baru.
 
@@ -133,16 +133,18 @@ Sistem rekomendasi yang dibangun dalam proyek ini menggunakan pendekatan Content
 Tahap berikutnya adalah mengukur kemiripan antar buku berdasarkan vektor TF-IDF-nya. Untuk itu, digunakan metrik cosine similarity, yaitu ukuran kemiripan dua vektor yang dihitung dari nilai kosinus sudut antara keduanya. Nilai cosine similarity berkisar antara 0 (tidak mirip sama sekali) hingga 1 (sama persis), dan semakin tinggi nilai ini, maka semakin mirip konten antar judul buku tersebut secara tekstual. Dengan menghitung cosine similarity antara satu judul dengan seluruh judul lainnya dalam dataset, diperoleh skor kemiripan untuk masing-masing pasangan judul buku.
     2. Fungsi Rekomendasi
     
-(![Top N Recommendations](output_top_n.png))
+![Top N Recommendations](output_top_n.png)
 
 Membangun fungsi rekomendasi yang menerima input berupa satu judul buku dari pengguna, lalu mengembalikan daftar Top-N buku yang memiliki skor cosine similarity tertinggi dengan buku input tersebut. Dalam implementasinya, setelah vektor similarity dihitung, sistem mengurutkan daftar buku berdasarkan skor tertinggi dan mengecualikan buku input itu sendiri dari daftar hasil. Output dari fungsi ini adalah sejumlah buku dengan judul yang kemudian dapat ditampilkan sebagai hasil rekomendasi kepada pengguna.
 
 ## Evaluation
 - Kesulitan pengguna menemukan Buku yang Relevan
-(![Top N Recommendation](output_title.png))
+
+![Top N Recommendation](output_title.png)
 
     Seluruh hasil rekomendasi mengandung kata kunci “Word”, menunjukkan bahwa sistem berhasil menangkap kemiripan leksikal dan semantik. Buku yang direkomendasikan berasal dari kategori dan genre yang beragam, namun tetap memiliki relevansi tematik berdasarkan judul.
-(![Hasil Evaluasi](ouput_hasil_evaluasi.png))
+  
+![Hasil Evaluasi](ouput_hasil_evaluasi.png)
 
     Untuk mengukur relevansi rekomendasi secara objektif, digunakan dua metrik evaluasi utama, yaitu Precision@5 dan Recall@5, yang merupakan standar umum dalam sistem rekomendasi top-N. Hasilnya menunjukkan bahwa:
 
