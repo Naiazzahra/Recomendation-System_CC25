@@ -33,74 +33,39 @@ Berdasarkan pernyataan masalah di atas, tujuan utama dari proyek sistem rekomend
 - Jawaban pernyataan masalah 2 : Menyediakan mekanisme otomatis untuk penemuan buku baru yang efisien, membantu pengguna menjelajahi berbagai judul di luar preferensi mereka yang sudah ada.
 - Jawaban pernyataan masalah 3 : Menciptakan pengalaman membaca yang lebih personal dan menarik bagi setiap pengguna, dengan menyarankan buku berdasarkan riwayat interaksi dan preferensi yang teridentifikasi.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
-
-    ### Solution statements
-    - Solution Approach 1: Content-Based Filtering.
-        - Deskripsi: Pendekatan ini akan merekomendasikan buku berdasarkan kemiripan fitur-fitur intrinsik buku itu sendiri. Misalnya, jika seorang pengguna menyukai buku bergenre fiksi ilmiah dengan penulis tertentu, sistem akan merekomendasikan buku fiksi ilmiah lain dari penulis yang sama atau penulis lain dengan gaya serupa. Fitur-fitur yang akan dipertimbangkan meliputi judul, penulis, penerbit, dan tahun publikasi.
-        - Implementasi Algoritma: Kami akan menggunakan TF-IDF Vectorizer untuk mengubah deskripsi tekstual buku (gabungan judul, penulis, penerbit) menjadi representasi numerik, dan kemudian menghitung Cosine Similarity antar buku untuk menemukan buku yang paling mirip secara konten.
-    - Solution Approach 2: Collaborative Filtering (Item-based).
-        - Deskripsi: Pendekatan ini akan merekomendasikan buku berdasarkan pola rating atau interaksi pengguna lain. Jika pengguna A menyukai buku X dan Y, dan pengguna B juga menyukai buku X, maka sistem akan menyarankan buku Y kepada pengguna B karena pola preferensi mereka serupa. Kami memilih pendekatan item-based karena seringkali lebih stabil dan mudah diskalakan untuk dataset besar dibandingkan user-based.
-        - Implementasi Algoritma: Kami akan membangun matriks pengguna-item (user-item matrix) yang jarang, dan kemudian menggunakan algoritma K-Nearest Neighbors (KNN) dengan metrik Cosine Similarity untuk menemukan buku-buku yang paling mirip berdasarkan pola rating yang mereka terima dari pengguna.
-     
-    Dengan membandingkan kedua pendekatan ini, kami dapat menentukan solusi mana yang paling efektif untuk dataset Book-Crossing dan kebutuhan proyek ini.
-
 ## Data Understanding
 Data yang digunakan dalam proyek sistem rekomendasi buku ini adalah Book-Crossing Dataset, yang dapat diunduh dari Kaggle melalui tautan berikut: Book-Recommendation-Dataset by Arashnic. Dataset ini merupakan kumpulan data dari komunitas pembaca buku online BookCrossing.com dan terdiri dari tiga file CSV terpisah: Books.csv, Ratings.csv, dan Users.csv.
 
 Secara total, dataset ini berisi:
+- 271.360 entri buku unik dalam Books.csv.
+- 278.858 entri pengguna unik dalam Users.csv.
+- 445.839 entri rating dalam Ratings.csv.
 
-271.379 entri buku unik dalam Books.csv.
-
-278.858 entri pengguna unik dalam Users.csv.
-
-1.149.780 entri rating dalam Ratings.csv.
-
-Kondisi data awal menunjukkan adanya beberapa nilai yang hilang, tipe data yang tidak konsisten (misalnya, 'Year-Of-Publication' yang bisa berupa string), dan rating implisit (nilai 0) yang perlu ditangani. Data rating juga sangat sparse, artinya sebagian besar pengguna hanya memberi rating pada sebagian kecil dari total buku yang tersedia.
+Kondisi data awal menunjukkan adanya beberapa nilai yang hilang, tipe data yang tidak konsisten ('Year-Of-Publication' yang bisa berupa string), dan rating implisit (nilai 0) yang perlu ditangani. Data rating juga sangat sparse, artinya sebagian besar pengguna hanya memberi rating pada sebagian kecil dari total buku yang tersedia.
 
 Berikut adalah uraian variabel-variabel pada setiap DataFrame:
 
 1. Books.csv
-
-ISBN: (Object) International Standard Book Number, pengidentifikasi unik untuk setiap buku. Ini adalah kunci penghubung dengan DataFrame Ratings.
-
-Book-Title: (Object) Judul buku.
-
-Book-Author: (Object) Nama penulis buku.
-
-Year-Of-Publication: (Object/Integer) Tahun publikasi buku. Awalnya dapat berisi nilai non-numerik.
-
-Publisher: (Object) Nama penerbit buku.
-
-Image-URL-S: (Object) URL gambar sampul buku ukuran kecil.
-
-Image-URL-M: (Object) URL gambar sampul buku ukuran sedang.
-
-Image-URL-L: (Object) URL gambar sampul buku ukuran besar.
+    - ISBN: (Object) International Standard Book Number, pengidentifikasi unik untuk setiap buku. Ini adalah kunci penghubung dengan DataFrame Ratings.
+    - Book-Title: (Object) Judul buku.
+    - Book-Author: (Object) Nama penulis buku.
+    - Year-Of-Publication: (Object/Integer) Tahun publikasi buku. Awalnya dapat berisi nilai non-numerik.
+    - Publisher: (Object) Nama penerbit buku.
+    - Image-URL-S: (Object) URL gambar sampul buku ukuran kecil.
+    - Image-URL-M: (Object) URL gambar sampul buku ukuran sedang.
+    - Image-URL-L: (Object) URL gambar sampul buku ukuran besar.
 
 2. Users.csv
 
-User-ID: (Integer) Pengidentifikasi unik untuk setiap pengguna. Ini adalah kunci penghubung dengan DataFrame Ratings.
-
-Location: (Object) Lokasi geografis pengguna (negara, kota, dll.).
-
-Age: (Object/Float) Usia pengguna. Awalnya dapat berisi nilai non-numerik atau NaN.
+    - User-ID: (Integer) Pengidentifikasi unik untuk setiap pengguna. Ini adalah kunci penghubung dengan DataFrame Ratings.
+    - Location: (Object) Lokasi geografis pengguna (negara, kota, dll.).
+    - Age: (Object/Float) Usia pengguna. Awalnya dapat berisi nilai non-numerik atau NaN.
 
 3. Ratings.csv
 
-User-ID: (Integer) Pengidentifikasi pengguna yang memberikan rating.
-
-ISBN: (Object) ISBN buku yang diberi rating.
-
-Book-Rating: (Integer) Rating yang diberikan pengguna pada buku, berkisar dari 0 hingga 10. Rating 0 sering diartikan sebagai rating implisit (buku yang hanya dilihat/diakses).
-
-Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
-
-Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+    - User-ID: (Integer) Pengidentifikasi pengguna yang memberikan rating.
+    - ISBN: (Object) ISBN buku yang diberi rating.
+    - Book-Rating: (Integer) Rating yang diberikan pengguna pada buku, berkisar dari 0 hingga 10. Rating 0 sering diartikan sebagai rating implisit (buku yang hanya dilihat/diakses).
 
 **Rubrik/Kriteria Tambahan (Opsional)**:
 - Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
