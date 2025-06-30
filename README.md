@@ -35,11 +35,11 @@ Sumber : https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset
 Secara total, dataset ini berisi:
 - 271.360 entri buku unik dalam Books.csv.
 - 278.858 entri pengguna unik dalam Users.csv.
-- 445.839 entri rating dalam Ratings.csv.
+- 1.149.780 entri rating dalam Ratings.csv.
 
-Kondisi data awal menunjukkan adanya beberapa nilai yang hilang, tipe data yang tidak konsisten ('Year-Of-Publication' yang bisa berupa string), dan rating implisit (nilai 0) yang perlu ditangani. Data rating juga sangat sparse, artinya sebagian besar pengguna hanya memberi rating pada sebagian kecil dari total buku yang tersedia.
+Berikut adalah uraian variabel-variabel pada setiap DataFrame dari sumber dataset https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset
 
-Berikut adalah uraian variabel-variabel pada setiap DataFrame:
+Dataset Books.csv, Ratings.csv, dan Users.csv semuanya didapatkan dari link kaggle diatas.
 
 1. Books.csv
     - Jumlah Data: 271.360 baris × 8 kolom
@@ -113,26 +113,33 @@ Dalam dataset ini, Book-Rating = 0 biasanya merepresentasikan interaksi implisit
 
         Alasan : Duplikasi dapat mengganggu distribusi rating dan menyebabkan bobot berlebih pada buku tertentu.
 
-3. Filter Sparsity pada Data Rating
-   - Agar sistem bekerja pada data yang lebih padat dan informatif, dilakukan penyaringan sebagai berikut:
-          - Hanya pengguna yang memberikan ≥ 5 rating disertakan.
-          - Hanya buku yang menerima ≥ 5 rating dari pengguna yang dipertahankan.
-
-        Alasan : Filter sparsity ini bertujuan mengurangi noise dan mempercepat pemrosesan, dengan memastikan bahwa data yang digunakan mengandung informasi yang cukup dan tidak terlalu jarang (sparse).
-   
-4. Dataset Users
+3. Dataset Users
    - Konversi kolom Age ke numerik
 Kolom ini mengandung beberapa nilai tidak valid, sehingga perlu dibersihkan dan diubah ke tipe numerik.
 
         Alasan : Meskipun Age tidak digunakan langsung dalam sistem Content-Based ini, konversi dilakukan sebagai bagian dari best practice untuk menjaga integritas data.
 
-5. Sampling data Book
+
+4. Penggabungan ratings_explicit dengan Books.csv
+   - Setelah ratings_explicit dibersihkan, data ini digabungkan dengan Books.csv berdasarkan kolom ISBN untuk memperoleh informasi Book-Title.
+  
+    Alasan : Sistem rekomendasi berbasis konten akan menggunakan judul buku sebagai sumber utama fitur. Oleh karena itu, penggabungan ini adalah syarat wajib sebelum proses ekstraksi fitur.
+
+
+5. Filter Sparsity pada Data Rating
+   - Agar sistem bekerja pada data yang lebih padat dan informatif, dilakukan penyaringan sebagai berikut:
+          - Hanya pengguna yang memberikan ≥ 5 rating disertakan.
+          - Hanya buku yang menerima ≥ 5 rating dari pengguna yang dipertahankan.
+
+        Alasan : Filter sparsity ini bertujuan mengurangi noise dan mempercepat pemrosesan, dengan memastikan bahwa data yang digunakan mengandung informasi yang cukup dan tidak terlalu jarang (sparse).
+
+6. Sampling data Book
    - Setelah seluruh data buku digabung dan dibersihkan, dilakukan sampling sebanyak 40.000 judul buku secara acak dari data gabungan. Sampling dilakukan setelah penggabungan dengan ratings_explicit, bukan pada awal tahapan.
 
         Alasan : Karena TF-IDF membangun matriks berdimensi tinggi (berdasarkan jumlah kata unik), sampling dilakukan untuk menghemat memori dan mempercepat proses komputasi cosine similarity.
 
 
-6. Ekstrasi fitur dengan TF-IDF
+7. Ekstrasi fitur dengan TF-IDF
         Setelah data buku yang bersih diperoleh, dilakukan proses ekstraksi fitur teks menggunakan teknik TF-IDF (Term Frequency–Inverse Document Frequency). Tujuan dari langkah ini adalah mengubah teks judul buku menjadi representasi numerik (vektor), yang dapat digunakan untuk mengukur kemiripan antar buku.
    
    - Proses:
