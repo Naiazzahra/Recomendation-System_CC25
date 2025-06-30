@@ -1,6 +1,6 @@
 # Recomendation-System_CC25
 
-# Laporan Proyek Machine Learning - Nama Anda
+# Book Recommendation System - Naia Az - Zahra MC132D5X1884
 
 ## Project Overview
 ### Latar Belakang
@@ -16,25 +16,21 @@ Proyek ini bertujuan untuk membangun sistem rekomendasi buku menggunakan dataset
 [2] Aggarwal, C. C. (2016). Recommender Systems: The Textbook. Springer.
 
 ## Business Understanding
-
-Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
+Terdapat beberapa rumusan masalah yang ada :
 
 ### Problem Statements
 Proyek sistem rekomendasi buku ini berupaya menjawab beberapa masalah utama yang dihadapi oleh pembaca dan platform buku:
 - Pernyataan Masalah 1: Kesulitan Pengguna Menemukan Buku yang Relevan. Dengan jutaan judul buku yang tersedia, pengguna seringkali kewalahan dan kesulitan dalam menyaring dan menemukan buku-buku yang benar-benar sesuai dengan minat dan preferensi mereka. Ini dapat menyebabkan kelelahan keputusan (decision fatigue) atau kehilangan minat dalam mencari buku baru.
 - Pernyataan Masalah 2: Efisiensi Penemuan Buku Baru yang Rendah. Pembaca mungkin terjebak dalam membaca genre atau penulis yang sama secara berulang dan melewatkan potensi penemuan buku-buku menarik di luar lingkaran kebiasaan mereka. Proses penemuan buku baru secara manual seringkali memakan waktu dan tidak efisien.
-- Pernyataan Masalah 3: Kurangnya Personalisasi Pengalaman Membaca. Platform buku dan toko buku online umumnya menawarkan daftar buku terlaris atau populer, tetapi kurang dalam memberikan rekomendasi yang spesifik untuk setiap individu berdasarkan riwayat dan preferensi unik mereka.
 
 ### Goals
 Berdasarkan pernyataan masalah di atas, tujuan utama dari proyek sistem rekomendasi buku ini adalah:
-- Jawaban pernyataan masalah 1 : Mengembangkan model yang mampu merekomendasikan buku yang sangat relevan kepada pengguna, sehingga meningkatkan kepuasan dan keterlibatan pembaca.
+- Jawaban pernyataan masalah 1 : Mengembangkan model yang mampu merekomendasikan buku yang sangat relevan kepada pengguna, sehingga meningkatkan kepuasan dan keterlibatan pembaca. dengan cara Mengembangkan sistem rekomendasi berbasis konten yang mampu mengusulkan buku serupa berdasarkan judul input.
 - Jawaban pernyataan masalah 2 : Menyediakan mekanisme otomatis untuk penemuan buku baru yang efisien, membantu pengguna menjelajahi berbagai judul di luar preferensi mereka yang sudah ada.
-- Jawaban pernyataan masalah 3 : Menciptakan pengalaman membaca yang lebih personal dan menarik bagi setiap pengguna, dengan menyarankan buku berdasarkan riwayat interaksi dan preferensi yang teridentifikasi.
 
 ## Data Understanding
-Data yang digunakan dalam proyek sistem rekomendasi buku ini adalah Book-Crossing Dataset, yang dapat diunduh dari Kaggle melalui tautan berikut: Book-Recommendation-Dataset by Arashnic. Dataset ini merupakan kumpulan data dari komunitas pembaca buku online BookCrossing.com dan terdiri dari tiga file CSV terpisah: Books.csv, Ratings.csv, dan Users.csv.
+Proyek ini menggunakan dataset yang berasal dari platform Kaggle – Book Recommendation Dataset by Arash Nic. Dataset ini terdiri dari tiga file utama: Books.csv, Ratings.csv, dan Users.csv. Ketiga file tersebut saling terkait melalui kolom ISBN (untuk menghubungkan buku dengan rating) dan User-ID (untuk menghubungkan pengguna dengan rating yang mereka berikan).
+Sumber : https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset
 
 Secara total, dataset ini berisi:
 - 271.360 entri buku unik dalam Books.csv.
@@ -46,6 +42,7 @@ Kondisi data awal menunjukkan adanya beberapa nilai yang hilang, tipe data yang 
 Berikut adalah uraian variabel-variabel pada setiap DataFrame:
 
 1. Books.csv
+    - Jumlah Data: 271.360 baris × 8 kolom
     - ISBN: (Object) International Standard Book Number, pengidentifikasi unik untuk setiap buku. Ini adalah kunci penghubung dengan DataFrame Ratings.
     - Book-Title: (Object) Judul buku.
     - Book-Author: (Object) Nama penulis buku.
@@ -54,9 +51,15 @@ Berikut adalah uraian variabel-variabel pada setiap DataFrame:
     - Image-URL-S: (Object) URL gambar sampul buku ukuran kecil.
     - Image-URL-M: (Object) URL gambar sampul buku ukuran sedang.
     - Image-URL-L: (Object) URL gambar sampul buku ukuran besar.
+    - Terdapat missing value pada kolom Book-Author, Publisher, dan Image-URL-L.
+    - Beberapa data pada Year-Of-Publication mengandung nilai tidak valid (seperti string nama penerbit).
+    - Tidak ditemukan baris duplikat secara langsung.
 
 2. Users.csv
 
+    - Jumlah Data: 278.858 baris × 3 kolom
+    - Kolom Age mengandung banyak nilai yang tidak valid, seperti usia < 5 atau > 100.
+    - Tidak ditemukan duplikat pada level User-ID.
     - User-ID: (Integer) Pengidentifikasi unik untuk setiap pengguna. Ini adalah kunci penghubung dengan DataFrame Ratings.
     - Location: (Object) Lokasi geografis pengguna (negara, kota, dll.).
     - Age: (Object/Float) Usia pengguna. Awalnya dapat berisi nilai non-numerik atau NaN.
@@ -67,33 +70,92 @@ Berikut adalah uraian variabel-variabel pada setiap DataFrame:
     - ISBN: (Object) ISBN buku yang diberi rating.
     - Book-Rating: (Integer) Rating yang diberikan pengguna pada buku, berkisar dari 0 hingga 10. Rating 0 sering diartikan sebagai rating implisit (buku yang hanya dilihat/diakses).
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+**Exploratory Data Analysis**:
+    1. Distribusi Rating Buku
+[!Distribusi Rating Buku](dis_rating_buku.png)
+
+        Berdasarkan  Distribusi rating menunjukkan bahwa buku eksplisit umumnya diterima dengan sangat baik oleh pembaca. Rating yang dominan tinggi menunjukkan kepuasan yang tinggi, serta mungkin adanya komunitas pembaca yang loyal. Namun, penting juga mencermati kemungkinan bias dalam pemberian rating, seperti hanya pembaca yang menyukai genre tersebut yang meninggalkan ulasan.
+    2. Top 10 Penerbit paling produktif
+[!penerbit paling Produktif](top10_penerbit.png)
+
+        Berdasarkan Visualisasi ini menunjukkan bahwa Harlequin adalah penerbit paling produktif, secara signifikan mengungguli yang lain. Sementara itu, sembilan penerbit lainnya memiliki volume yang relatif serupa, menandakan kompetisi yang lebih merata di luar dominasi Harlequin.
+
+    3. Top 10 Penulis paling produktif
+[!Penulis padlin Produktif](top10_penulis.png)
+
+        Berdasarkan visualisasi diatas Agatha Christie memimpin sebagai penulis paling produktif, dengan Shakespeare dan King menyusul. Grafik ini menunjukkan bahwa produktivitas luar biasa bisa dicapai oleh penulis dari berbagai era dan genre, dan penulis serial cenderung memiliki volume karya lebih banyak. Informasi ini sangat bermanfaat untuk analisis pasar buku, tren genre, atau inspirasi bagi penulis baru.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+Adapun teknik yang dilakukan : 
+    1. Dataset Books
+        - Konversi Year-Of-Publication ke numerik
+Menggunakan pd.to_numeric(..., errors='coerce') untuk memastikan kolom ini bertipe numerik dan mengubah nilai tidak valid (seperti 'DK Publishing Inc' atau 'Gallimard') menjadi NaN.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+        Alasan : Kolom tahun yang tidak valid dapat menyebabkan kesalahan saat melakukan filter atau visualisasi berdasarkan waktu.
+        - Isi nilai tidak valid (NaN) pada Year-Of-Publication dengan median tahun valid
+Setelah disaring agar hanya tahun antara 1900–2025, median dihitung dan digunakan untuk mengisi nilai kosong agar distribusi tidak terdistorsi oleh nilai ekstrem.
+
+        Alasan : Nilai kosong di kolom seperti author atau publisher bisa menyebabkan error saat eksplorasi atau analisis.
+        - Isi nilai kosong pada Book-Author, Publisher, dan Image-URL-L
+Diisi dengan placeholder seperti 'Unknown Author' atau 'Unknown Publisher'
+
+        Alasan :  untuk menjaga integritas data saat digabungkan atau divisualisasikan.
+        - Sampling 40.000 judul buku
+Dataset buku sangat besar (271 ribu entri), sehingga sampling dilakukan untuk menghemat waktu komputasi dan memori, terutama ketika membangun TF-IDF matrix yang kompleks (40000 x 40000).
+
+    2. Dataset Ratings
+        - Filter hanya rating eksplisit (Book-Rating ≠ 0)
+Dalam dataset ini, Book-Rating = 0 biasanya merepresentasikan interaksi implisit (seperti view atau klik), bukan penilaian yang sebenarnya.
+
+        Alasan : Hanya rating eksplisit yang valid sebagai indikator relevansi atau kesukaan pengguna terhadap buku.
+        - Menghapus duplikat rating dari user ke buku yang sama
+Disimpan hanya satu rating unik per kombinasi User-ID dan ISBN untuk menghindari bias atau duplikasi saat penggabungan data.
+
+        Alasan : Duplikasi dapat mengganggu distribusi rating dan menyebabkan bobot berlebih pada buku tertentu.
+        - Gabungkan Ratings.csv dengan Books.csv
+Menggunakan kolom ISBN untuk menghubungkan data rating dengan judul buku yang dibutuhkan sebagai input Content-Based Filtering.
+
+        Alasan : Penggabungan dengan judul sangat penting karena model rekomendasi ini berbasis pada judul (Book-Title).
+
+    3. Dataset Users
+        - Konversi kolom Age ke numerik
+Kolom ini mengandung beberapa nilai tidak valid (misalnya, umur > 100 atau < 5), sehingga perlu dibersihkan dan diubah ke tipe numerik.
+
+        Alasan : Meskipun Age tidak digunakan langsung dalam sistem Content-Based ini, konversi dilakukan sebagai bagian dari best practice untuk menjaga integritas data.
+
+    4. Ekstrasi fitur dengan TF-IDF
+        Setelah data buku yang bersih diperoleh, dilakukan proses ekstraksi fitur teks menggunakan teknik TF-IDF (Term Frequency–Inverse Document Frequency). Tujuan dari langkah ini adalah mengubah teks judul buku menjadi representasi numerik (vektor), yang dapat digunakan untuk mengukur kemiripan antar buku.
+        - Proses:
+          - Menggunakan TfidfVectorizer dari scikit-learn, setiap judul buku dikonversi menjadi vektor TF-IDF. Stop words dalam bahasa Inggris dihapus untuk menghindari pengaruh kata-kata umum yang tidak bermakna, seperti “the”, “and”, “of”, dan sebagainya.
+        - Hasil:
+          - Dihasilkan matriks berdimensi 40000 x n, di mana n adalah jumlah kata unik dalam seluruh korpus judul. Setiap baris mewakili sebuah buku, dan setiap kolom mewakili bobot sebuah kata berdasarkan frekuensinya relatif terhadap seluruh korpus.
 
 ## Modeling
-Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
+Sistem rekomendasi yang dibangun dalam proyek ini menggunakan pendekatan Content-Based Filtering berbasis cosine similarity antar judul buku. Fokus utama dari metode ini adalah menemukan buku-buku yang memiliki kemiripan tinggi secara semantik terhadap judul yang diberikan sebagai input oleh pengguna. Setelah representasi judul diubah menjadi vektor melalui proses TF-IDF (dijelaskan pada bagian Data Preparation), proses utama pada tahap modeling adalah mengukur kedekatan antar vektor judul buku dengan cosine similarity.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menyajikan dua solusi rekomendasi dengan algoritma yang berbeda.
-- Menjelaskan kelebihan dan kekurangan dari solusi/pendekatan yang dipilih.
+    1. Cosine Similarity
+
+        Tahap berikutnya adalah mengukur kemiripan antar buku berdasarkan vektor TF-IDF-nya. Untuk itu, digunakan metrik cosine similarity, yaitu ukuran kemiripan dua vektor yang dihitung dari nilai kosinus sudut antara keduanya. Nilai cosine similarity berkisar antara 0 (tidak mirip sama sekali) hingga 1 (sama persis), dan semakin tinggi nilai ini, maka semakin mirip konten antar judul buku tersebut secara tekstual. Dengan menghitung cosine similarity antara satu judul dengan seluruh judul lainnya dalam dataset, diperoleh skor kemiripan untuk masing-masing pasangan judul buku.
+
+    2. Fungsi Rekomendasi
+(![Top N Recommendations](output_top_n.png))
+
+        Membangun fungsi rekomendasi yang menerima input berupa satu judul buku dari pengguna, lalu mengembalikan daftar Top-N buku yang memiliki skor cosine similarity tertinggi dengan buku input tersebut. Dalam implementasinya, setelah vektor similarity dihitung, sistem mengurutkan daftar buku berdasarkan skor tertinggi dan mengecualikan buku input itu sendiri dari daftar hasil. Output dari fungsi ini adalah sejumlah buku dengan judul yang kemudian dapat ditampilkan sebagai hasil rekomendasi kepada pengguna.
 
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+- Kesulitan pengguna menemukan Buku yang Relevan
+[!Top N Recommendation](output_title.png)
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+    Seluruh hasil rekomendasi mengandung kata kunci “Word”, menunjukkan bahwa sistem berhasil menangkap kemiripan leksikal dan semantik. Buku yang direkomendasikan berasal dari kategori dan genre yang beragam, namun tetap memiliki relevansi tematik berdasarkan judul.
+[!Hasil Evaluasi](ouput_hasil_evaluasi.png)
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+    Untuk mengukur relevansi rekomendasi secara objektif, digunakan dua metrik evaluasi utama, yaitu Precision@5 dan Recall@5, yang merupakan standar umum dalam sistem rekomendasi top-N. Hasilnya menunjukkan bahwa:
 
-**---Ini adalah bagian akhir laporan---**
+Precision@5 = 0.0598, yang berarti dari setiap 5 buku yang direkomendasikan, sekitar 6% di antaranya benar-benar disukai oleh pengguna (berdasarkan histori rating).
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+Recall@5 = 0.2461, artinya sistem mampu mencakup hampir 25% dari total buku yang pernah disukai pengguna dalam daftar rekomendasi.
+
+- Efisiensi Penemuan Buku Baru yang Rendah
+    Rekomendasi yang dihasilkan oleh sistem tidak terbatas pada genre atau penulis yang sama. Sebagai contoh, dari judul “Sky Knife”, sistem merekomendasikan buku dari berbagai penulis dan penerbit berbeda, termasuk yang tidak populer. Ini menunjukkan bahwa sistem mendorong eksplorasi terhadap buku-buku yang belum dikenal pengguna sebelumnya, namun masih relevan secara tematik.
+
+    Dengan menggunakan Content-Based Filtering berbasis TF-IDF terhadap judul, sistem tidak bergantung pada histori rating pengguna lain, sehingga tetap dapat menghasilkan rekomendasi bahkan untuk pengguna baru (cold-start).
