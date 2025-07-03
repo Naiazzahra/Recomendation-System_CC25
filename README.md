@@ -1,5 +1,3 @@
-# Recomendation-System_CC25
-
 # Book Recommendation System - Naia Az - Zahra MC132D5X1884
 
 ## Project Overview
